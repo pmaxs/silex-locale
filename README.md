@@ -10,12 +10,12 @@ Installation
 Usage
 -----
 
-Options:
+Options:  
 locale.locales - available locales  
 locale.default_locale - default locale  
 locale.resolve_by_host - resolve locale from host name  
 
-Urls:
+Urls:  
 locale.resolve_by_host = 0, default locale: scheme://host/...  
 locale.resolve_by_host = 0, not default locale: scheme://host/{{locale}}/...  
 
