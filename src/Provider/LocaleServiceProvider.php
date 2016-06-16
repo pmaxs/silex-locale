@@ -1,8 +1,8 @@
 <?php
 namespace Pmaxs\Silex\Locale\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Pmaxs\Silex\Locale\EventListener\LocaleListener;
 use Pmaxs\Silex\Locale\UrlGenerator as LocaleUrlGenerator;
 use Pmaxs\Silex\Locale\Twig\LocaleExtension;
@@ -15,11 +15,11 @@ class LocaleServiceProvider implements ServiceProviderInterface
     /**
      * @inheritdoc
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['locale.fake_index_route'] = 'locale-index0';
 
-        $app['locale.url_generator'] = $app->share(function() use ($app) {
+        $app['locale.url_generator'] = function() use ($app) {
             return new LocaleUrlGenerator(
                 $app['url_generator'],
                 $app['locale.locales'],
@@ -28,7 +28,7 @@ class LocaleServiceProvider implements ServiceProviderInterface
                 $app['locale.resolve_by_host'],
                 $app['locale.fake_index_route']
             );
-        });
+        };
 
         if (isset($app['twig'])) {
             $app->extend('twig', function ($twig) use ($app) {
