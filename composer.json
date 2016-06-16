@@ -1,7 +1,7 @@
 {
     "name": "pmaxs/silex-locale",
     "type": "library",
-    "description": "Silex service provider to adjust locale/languahe via url",
+    "description": "Silex service provider to adjust locale/language via url",
     "homepage": "https://github.com/pmaxs/silex-locale",
     "keywords": ["locale", "silex", "symfony"],
     "minimum-stability": "stable",
