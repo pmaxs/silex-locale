@@ -83,7 +83,9 @@ class LocaleListener implements EventSubscriberInterface
 
         $locales =  \implode('|', $this->locales);
 
-        foreach ($this->routes as $route) {
+        foreach ($this->routes as $routeName => $route) {
+            if (\substr($routeName, 0, 1) === '_') continue;
+
             $route
                 ->setPath('/{locale}' . \ltrim($route->getPath(), '/'))
                 ->setRequirement('locale', '((?:' . $locales . ')/)?')
