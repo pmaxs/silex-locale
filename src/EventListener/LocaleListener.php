@@ -79,6 +79,7 @@ class LocaleListener implements EventSubscriberInterface
     public function setupRoutes(GetResponseEvent $event)
     {
         if ($event->getRequestType() != HttpKernelInterface::MASTER_REQUEST) return;
+        if ($this->resolve_by_host) return;
 
         $locales =  \implode('|', $this->locales);
 
@@ -131,12 +132,14 @@ class LocaleListener implements EventSubscriberInterface
         $request->attributes->set('_locale', $locale);
 
         // routes
-        if (!$this->resolve_by_host && $locale != $this->default_locale) {
-            foreach ($this->routes as $route) {
-                $route->setDefault('locale', $locale . '/');
-            }
+        if (!$this->resolve_by_host) {
+            if ($locale != $this->default_locale) {
+                foreach ($this->routes as $route) {
+                    $route->setDefault('locale', $locale . '/');
+                }
 
-            $this->routes->get($this->fake_index_route)->setDefault('locale0', $locale);
+                $this->routes->get($this->fake_index_route)->setDefault('locale0', $locale);
+            }
         }
     }
 }
