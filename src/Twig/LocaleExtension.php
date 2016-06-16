@@ -1,0 +1,62 @@
+<?php
+namespace Pmaxs\Silex\Locale\Twig;
+
+use Pmaxs\Silex\Locale\UrlGenerator;
+
+/**
+ * Twig extension for locale
+ */
+class LocaleExtension extends \Twig_Extension
+{
+    /**
+     * @param UrlGenerator $generator
+     */
+    protected $generator;
+
+    /**
+     * Constructor
+     * @param UrlGenerator $generator
+     */
+    public function __construct(UrlGenerator $generator)
+    {
+        $this->generator = $generator;
+    }
+
+    /**
+     * @inherit
+     */
+    public function getFunctions()
+    {
+        return [
+            new \Twig_SimpleFunction('locale_get_index_url', [$this, 'getIndexUrl']),
+            new \Twig_SimpleFunction('locale_get_index_url_for_locale', [$this, 'getIndexUrlForLocale']),
+        ];
+    }
+
+    /**
+     * Returns index url for current locale
+     * @return string url
+     */
+    public function getIndexUrl()
+    {
+        return $this->generator->getIndexUrl();
+    }
+
+    /**
+     * Returns index url for locale
+     * @param string $locale locale
+     * @return string url
+     */
+    public function getIndexUrlForLocale($locale)
+    {
+        return $this->generator->getIndexUrlForLocale($locale);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getName()
+    {
+        return get_class($this);
+    }
+}
