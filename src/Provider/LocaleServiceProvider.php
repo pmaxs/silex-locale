@@ -3,6 +3,8 @@ namespace Pmaxs\Silex\Locale\Provider;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Silex\Application;
+use Silex\Api\BootableProviderInterface;
 use Pmaxs\Silex\Locale\EventListener\LocaleListener;
 use Pmaxs\Silex\Locale\UrlGenerator as LocaleUrlGenerator;
 use Pmaxs\Silex\Locale\Twig\LocaleExtension;
@@ -10,7 +12,7 @@ use Pmaxs\Silex\Locale\Twig\LocaleExtension;
 /**
  * Locale Provider.
  */
-class LocaleServiceProvider implements ServiceProviderInterface
+class LocaleServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
     /**
      * @inheritdoc
