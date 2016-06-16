@@ -1,6 +1,6 @@
 # Silex-locale
 
-Silex service provider to adjust locale/languahe via url.
+Silex service provider to adjust locale/language via url.
 
 Installation
 ------------
