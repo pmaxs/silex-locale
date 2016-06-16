@@ -16,10 +16,5 @@
         "psr-4": {
             "Pmaxs\\Silex\\Locale\\": "src/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0"
-        }
     }
 }
