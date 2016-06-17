@@ -5,7 +5,8 @@ Silex service provider to adjust locale/language via url.
 Installation
 ------------
 
-    composer require pmaxs/silex-locale
+    composer require pmaxs/silex-locale "^1.0" # for silex v1.x
+    composer require pmaxs/silex-locale "^2.0" # for silex v2.x
 
 Usage
 -----
