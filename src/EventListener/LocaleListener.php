@@ -139,8 +139,6 @@ class LocaleListener implements EventSubscriberInterface
                 foreach ($this->routes as $route) {
                     $route->setDefault('locale', $locale . '/');
                 }
-
-                $this->routes->get($this->fake_index_route)->setDefault('locale0', $locale);
             }
         }
     }
