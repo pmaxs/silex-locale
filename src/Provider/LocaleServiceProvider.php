@@ -36,7 +36,10 @@ class LocaleServiceProvider implements ServiceProviderInterface
                 if ($initialized) return $twig;
                 $initialized = true;
 
-                $twig->addExtension(new LocaleExtension($app['locale.url_generator']));
+                $twig->addExtension(new LocaleExtension(
+                    $app['locale.url_generator'],
+                    $app['locale.locales']
+                ));
 
                 return $twig;
             });
