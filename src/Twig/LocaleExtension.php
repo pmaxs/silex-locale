@@ -14,22 +14,40 @@ class LocaleExtension extends \Twig_Extension
     protected $generator;
 
     /**
+     * Possible locales
+     * @var array
+     */
+    protected $locales;
+
+    /**
      * Constructor
      * @param UrlGenerator $generator
+     * @param array $locales possible locales
      */
-    public function __construct(UrlGenerator $generator)
+    public function __construct(UrlGenerator $generator, $locales)
     {
         $this->generator = $generator;
+        $this->locales = $locales;
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      */
     public function getFunctions()
     {
         return [
             new \Twig_SimpleFunction('locale_get_index_url', [$this, 'getIndexUrl']),
             new \Twig_SimpleFunction('locale_get_index_url_for_locale', [$this, 'getIndexUrlForLocale']),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getGlobals()
+    {
+        return [
+            'locales' => $this->locales,
         ];
     }
 
