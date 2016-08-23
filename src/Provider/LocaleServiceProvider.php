@@ -27,7 +27,6 @@ class LocaleServiceProvider implements ServiceProviderInterface, BootableProvide
             return new LocaleUrlGenerator(
                 $app['url_generator'],
                 $app['locale.locales'],
-                function() use ($app) { return $app['locale']; },
                 $app['locale.default_locale'],
                 $app['locale.resolve_by_host'],
                 $app['locale.fake_index_route']
