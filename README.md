@@ -24,11 +24,27 @@ locale.resolve_by_host = 0, not default locale: scheme://host/{{locale}}/...
 locale.resolve_by_host = 1, default locale: scheme://host/...  
 locale.resolve_by_host = 1, not default locale: scheme://{{locale}}.host/...  
 
+silex v1.x
+
 ```php
 $app->register(new Pmaxs\Silex\Locale\Provider\LocaleServiceProvider(), [
     'locale.locales' => ['en','ru','jp'],
     'locale.default_locale' => 'en',
     'locale.resolve_by_host' => 0,
     'locale.exclude_routes' => ['^_'],
+]);
+```
+
+silex v2.x
+
+```php
+$app->register(new Pmaxs\Silex\Locale\Provider\LocaleServiceProvider(), [
+    'locale.locales' => ['en','ru','jp'],
+    'locale.default_locale' => 'en',
+    'locale.resolve_by_host' => 0,
+    'locale.exclude_routes' => ['^_'],
+]);
+
+$app->register(new Silex\Provider\LocaleServiceProvider(), [
 ]);
 ```

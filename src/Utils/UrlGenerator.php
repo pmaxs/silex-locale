@@ -21,12 +21,6 @@ class UrlGenerator
     protected $locales;
 
     /**
-     * Current locale
-     * @var callable
-     */
-    protected $locale;
-
-    /**
      * Default locale
      * @var string
      */
@@ -45,32 +39,20 @@ class UrlGenerator
     protected $fake_index_route;
 
     /**
-     * Host name
-     * @var string
-     */
-    protected $host;
-
-    /**
      * Constructor
      * @param UrlGeneratorInterface $generator url generator
      * @param array $locales possible locales
-     * @param callable $locale current locale
      * @param string $default_locale default locale
      * @param boolean $resolve_by_host resolve locale by host
      * @param string $fake_index_route fake index route name
      */
-    public function __construct(UrlGeneratorInterface $generator, $locales, $locale, $default_locale, $resolve_by_host, $fake_index_route)
+    public function __construct(UrlGeneratorInterface $generator, $locales, $default_locale, $resolve_by_host, $fake_index_route)
     {
         $this->generator = $generator;
         $this->locales = $locales;
-        $this->locale = $locale;
         $this->default_locale = $default_locale;
         $this->resolve_by_host = $resolve_by_host;
         $this->fake_index_route = $fake_index_route;
-
-        $host = $generator->getContext()->getHost();
-        $host = preg_replace('~(' . implode('|', $this->locales) . ')\\.~i', '', $host);
-        $this->host = $host;
     }
 
     /**
@@ -80,7 +62,7 @@ class UrlGenerator
      */
     public function getIndexUrl($absolute = false)
     {
-        return $this->getIndexUrlForLocale($this->getCurrentLocale(), $absolute);
+        return $this->getIndexUrlForLocale($this->getLocale(), $absolute);
     }
 
     /**
@@ -95,9 +77,9 @@ class UrlGenerator
 
         if ($this->resolve_by_host) {
             $url = ''
-                .$this->generator->getContext()->getScheme().'://'
+                .$this->getScheme().'://'
                 .($locale ? $locale . '.' : '')
-                .$this->host . '/';
+                .$this->getHost() . '/';
         } else {
             $url = $this->generator->generate(
                 $this->fake_index_route,
@@ -112,12 +94,37 @@ class UrlGenerator
     }
 
     /**
-     * Returns current locale
+     * Return scheme
      * @return string
      */
-    public function getCurrentLocale()
+    protected function getScheme()
     {
-        $f = $this->locale;
-        return $f();
+        return $this->generator->getContext()->getScheme();
     }
+
+    /**
+     * Return host
+     * @return string
+     */
+    protected function getHost()
+    {
+        static $host;
+
+        if (isset($host)) return $host;
+
+        $host = $this->generator->getContext()->getHost();
+        $host = preg_replace('~(' . implode('|', $this->locales) . ')\\.~i', '', $host);
+
+        return $host;
+    }
+
+    /**
+     * Return current locale
+     * @return string
+     */
+    protected function getLocale()
+    {
+        return $this->generator->getContext()->getParameter('_locale');
+    }
+
 }
