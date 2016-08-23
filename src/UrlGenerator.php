@@ -69,7 +69,7 @@ class UrlGenerator
         $this->fake_index_route = $fake_index_route;
 
         $host = $generator->getContext()->getHost();
-        $host = \preg_replace('~(' . \implode('|', $this->locales) . ')\\.~i', '', $host);
+        $host = preg_replace('~(' . implode('|', $this->locales) . ')\\.~i', '', $host);
         $this->host = $host;
     }
 
@@ -105,7 +105,7 @@ class UrlGenerator
                 $absolute ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH
             );
 
-            $url = \rtrim($url, '/') . '/';
+            $url = rtrim($url, '/') . '/';
         }
 
         return $url;

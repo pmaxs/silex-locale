@@ -15,6 +15,7 @@ Options:
 locale.locales - available locales  
 locale.default_locale - default locale  
 locale.resolve_by_host - resolve locale from host name  
+locale.exclude_routes - routes that should be excluded (service routes)
 
 Urls:  
 locale.resolve_by_host = 0, default locale: scheme://host/...  
@@ -28,5 +29,6 @@ $app->register(new Pmaxs\Silex\Locale\Provider\LocaleServiceProvider(), [
     'locale.locales' => ['en','ru','jp'],
     'locale.default_locale' => 'en',
     'locale.resolve_by_host' => 0,
+    'locale.exclude_routes' => ['^_'],
 ]);
 ```

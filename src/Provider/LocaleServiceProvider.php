@@ -3,6 +3,7 @@ namespace Pmaxs\Silex\Locale\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\Routing\Route;
 use Pmaxs\Silex\Locale\EventListener\LocaleListener;
 use Pmaxs\Silex\Locale\UrlGenerator as LocaleUrlGenerator;
 use Pmaxs\Silex\Locale\Twig\LocaleExtension;
@@ -17,6 +18,7 @@ class LocaleServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
+        $app['locale.exclude_routes'] = [];
         $app['locale.fake_index_route'] = 'locale-index0';
 
         $app['locale.url_generator'] = $app->share(function() use ($app) {
@@ -56,7 +58,15 @@ class LocaleServiceProvider implements ServiceProviderInterface
             $app['locale.default_locale'],
             $app['locale.resolve_by_host'],
             $app['routes'],
-            $app['locale.fake_index_route']
+            array_merge($app['locale.exclude_routes'], [$app['locale.fake_index_route']])
         ));
+
+        if (!$this->resolve_by_host) {
+            $app['routes']->add($app['locale.fake_index_route'], new Route(
+                '/{locale0}/',
+                ['locale0' => '', '_controller' => null],
+                ['locale0' => '|' . implode('|', $app['locale.locales'])]
+            ));
+        }
     }
 }
