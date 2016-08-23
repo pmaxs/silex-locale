@@ -5,6 +5,7 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Application;
 use Silex\Api\BootableProviderInterface;
+use Symfony\Component\Routing\Route;
 use Pmaxs\Silex\Locale\EventListener\LocaleListener;
 use Pmaxs\Silex\Locale\UrlGenerator as LocaleUrlGenerator;
 use Pmaxs\Silex\Locale\Twig\LocaleExtension;
@@ -19,6 +20,7 @@ class LocaleServiceProvider implements ServiceProviderInterface, BootableProvide
      */
     public function register(Container $app)
     {
+        $app['locale.exclude_routes'] = [];
         $app['locale.fake_index_route'] = 'locale-index0';
 
         $app['locale.url_generator'] = function() use ($app) {
@@ -58,7 +60,15 @@ class LocaleServiceProvider implements ServiceProviderInterface, BootableProvide
             $app['locale.default_locale'],
             $app['locale.resolve_by_host'],
             $app['routes'],
-            $app['locale.fake_index_route']
+            array_merge($app['locale.exclude_routes'], [$app['locale.fake_index_route']])
         ));
+
+        if (!$this->resolve_by_host) {
+            $app['routes']->add($app['locale.fake_index_route'], new Route(
+                '/{locale0}/',
+                ['locale0' => '', '_controller' => null],
+                ['locale0' => '|' . implode('|', $app['locale.locales'])]
+            ));
+    }
     }
 }

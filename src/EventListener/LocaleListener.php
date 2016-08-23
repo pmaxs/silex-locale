@@ -5,7 +5,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
@@ -38,25 +37,25 @@ class LocaleListener implements EventSubscriberInterface
     protected $routes;
 
     /**
-     * Fake index route name
-     * @var string
+     * Routes that should be excluded
+     * @var array
      */
-    protected $fake_index_route;
+    protected $exclude_routes;
 
     /**
      * @param array $locales possible locales
      * @param string $default_locale default locale
      * @param boolean $resolve_by_host resolve locale by host name
      * @param RouteCollection $routes routes
-     * @param string $fake_index_route fake index route name
+     * @param array $exclude_routes routes that should be excluded
      */
-    public function __construct($locales, $default_locale, $resolve_by_host, RouteCollection $routes, $fake_index_route)
+    public function __construct($locales, $default_locale, $resolve_by_host, RouteCollection $routes, $exclude_routes)
     {
         $this->locales = $locales;
         $this->default_locale = $default_locale;
         $this->resolve_by_host = $resolve_by_host;
         $this->routes = $routes;
-        $this->fake_index_route = $fake_index_route;
+        $this->exclude_routes = $exclude_routes;
     }
 
     /**
@@ -81,28 +80,21 @@ class LocaleListener implements EventSubscriberInterface
         if ($event->getRequestType() != HttpKernelInterface::MASTER_REQUEST) return;
         if ($this->resolve_by_host) return;
 
-        $locales =  \implode('|', $this->locales);
+        $locales =  implode('|', $this->locales);
+
+        $exclude_routes = implode('|', $this->exclude_routes);
+        $exclude_routes = str_replace('~', '\\~', $exclude_routes);
+        $exclude_routes = '~' . $exclude_routes . '~';
 
         foreach ($this->routes as $routeName => $route) {
-            if (\substr($routeName, 0, 1) === '_') continue;
+            if (preg_match($exclude_routes, $routeName)) continue;
 
             $route
-                ->setPath('/{locale}' . \ltrim($route->getPath(), '/'))
+                ->setPath('/{locale}' . ltrim($route->getPath(), '/'))
                 ->setRequirement('locale', '((?:' . $locales . ')/)?')
                 ->setDefault('locale', '')
             ;
         }
-
-        $this->routes->add($this->fake_index_route, new Route(
-            '/{locale0}/',
-            [
-                'locale0' => '',
-                '_controller' => null,
-            ],
-            [
-                'locale0' => '|' . $locales,
-            ]
-        ));
     }
 
     /**
@@ -117,12 +109,12 @@ class LocaleListener implements EventSubscriberInterface
 
         // calc
         if ($this->resolve_by_host) {
-            if (\preg_match('~\\b(' . \implode($this->locales, '|') . ')\\.~i', $request->getHost(), $matches)) {
+            if (preg_match('~\\b(' . \implode($this->locales, '|') . ')\\.~i', $request->getHost(), $matches)) {
                 $locale = $matches[1];
             }
         } else {
             if ($request->get('locale')) {
-                $locale = \trim($request->get('locale'), '\\/');
+                $locale = trim($request->get('locale'), '\\/');
             }
         }
         if (empty($locale)) {
