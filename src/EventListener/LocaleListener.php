@@ -82,12 +82,10 @@ class LocaleListener implements EventSubscriberInterface
 
         $locales =  implode('|', $this->locales);
 
-        $exclude_routes = implode('|', $this->exclude_routes);
-        $exclude_routes = str_replace('~', '\\~', $exclude_routes);
-        $exclude_routes = '~' . $exclude_routes . '~';
+        $exclude_routes_reg = $this->getExcludeRoutesReg();
 
         foreach ($this->routes as $routeName => $route) {
-            if (preg_match($exclude_routes, $routeName)) continue;
+            if ($exclude_routes_reg && preg_match($exclude_routes_reg, $routeName)) continue;
 
             $route
                 ->setPath('/{locale}' . ltrim($route->getPath(), '/'))
@@ -127,11 +125,32 @@ class LocaleListener implements EventSubscriberInterface
 
         // routes
         if (!$this->resolve_by_host) {
-            if ($locale != $this->default_locale) {
-                foreach ($this->routes as $route) {
-                    $route->setDefault('locale', $locale . '/');
-                }
+            $locale1 = $locale != $this->default_locale ? $locale . '/' : '';
+
+            $exclude_routes_reg = $this->getExcludeRoutesReg();
+
+            foreach ($this->routes as $routeName => $route) {
+                if ($exclude_routes_reg && preg_match($exclude_routes_reg, $routeName)) continue;
+
+                $route->setDefault('locale', $locale1);
             }
         }
+    }
+
+    /**
+     * Return host
+     * @return string
+     */
+    protected function getExcludeRoutesReg()
+    {
+        static $exclude_routes_reg;
+
+        if (isset($exclude_routes_reg)) return $exclude_routes_reg;
+
+        $exclude_routes_reg = implode('|', $this->exclude_routes);
+        $exclude_routes_reg = str_replace('~', '\\~', $exclude_routes_reg);
+        $exclude_routes_reg = '~' . $exclude_routes_reg . '~';
+
+        return $exclude_routes_reg;
     }
 }
