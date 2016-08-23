@@ -22,7 +22,7 @@ class UrlGenerator
 
     /**
      * Current locale
-     * @var string
+     * @var callable
      */
     protected $locale;
 
@@ -54,7 +54,7 @@ class UrlGenerator
      * Constructor
      * @param UrlGeneratorInterface $generator url generator
      * @param array $locales possible locales
-     * @param string $locale current locale
+     * @param callable $locale current locale
      * @param string $default_locale default locale
      * @param boolean $resolve_by_host resolve locale by host
      * @param string $fake_index_route fake index route name
@@ -80,7 +80,7 @@ class UrlGenerator
      */
     public function getIndexUrl($absolute = false)
     {
-        return $this->getIndexUrlForLocale($this->locale, $absolute);
+        return $this->getIndexUrlForLocale($this->getCurrentLocale(), $absolute);
     }
 
     /**
@@ -109,5 +109,15 @@ class UrlGenerator
         }
 
         return $url;
+    }
+
+    /**
+     * Returns current locale
+     * @return string
+     */
+    public function getCurrentLocale()
+    {
+        $f = $this->locale;
+        return $f();
     }
 }
