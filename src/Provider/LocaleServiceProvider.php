@@ -7,7 +7,7 @@ use Silex\Application;
 use Silex\Api\BootableProviderInterface;
 use Symfony\Component\Routing\Route;
 use Pmaxs\Silex\Locale\EventListener\LocaleListener;
-use Pmaxs\Silex\Locale\UrlGenerator as LocaleUrlGenerator;
+use Pmaxs\Silex\Locale\Utils\UrlGenerator as LocaleUrlGenerator;
 use Pmaxs\Silex\Locale\Twig\LocaleExtension;
 
 /**

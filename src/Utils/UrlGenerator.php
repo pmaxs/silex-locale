@@ -1,5 +1,5 @@
 <?php
-namespace Pmaxs\Silex\Locale;
+namespace Pmaxs\Silex\Locale\Utils;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
