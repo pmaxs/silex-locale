@@ -1,7 +1,7 @@
 <?php
 namespace Pmaxs\Silex\Locale\Twig;
 
-use Pmaxs\Silex\Locale\UrlGenerator;
+use Pmaxs\Silex\Locale\Utils\UrlGenerator;
 
 /**
  * Twig extension for locale
