@@ -138,7 +138,7 @@ class LocaleListener implements EventSubscriberInterface
     }
 
     /**
-     * Return host
+     * Return exclude routes reg
      * @return string
      */
     protected function getExcludeRoutesReg()
