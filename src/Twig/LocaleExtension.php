@@ -1,6 +1,7 @@
 <?php
 namespace Pmaxs\Silex\Locale\Twig;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Pmaxs\Silex\Locale\Utils\UrlGenerator;
 
 /**
@@ -36,6 +37,9 @@ class LocaleExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
+            new \Twig_SimpleFunction('generate', [$this, 'generate']),
+            new \Twig_SimpleFunction('locale_get_url', [$this, 'getUrl']),
+            new \Twig_SimpleFunction('locale_get_url_for_locale', [$this, 'getUrlForLocale']),
             new \Twig_SimpleFunction('locale_get_index_url', [$this, 'getIndexUrl']),
             new \Twig_SimpleFunction('locale_get_index_url_for_locale', [$this, 'getIndexUrlForLocale']),
         ];
@@ -52,12 +56,40 @@ class LocaleExtension extends \Twig_Extension
     }
 
     /**
+     * Returns url for route
+     * @return string url
+     */
+    public function generate($locale, $name, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    {
+        return $this->generator->generate($locale, $name, $parameters, $referenceType);
+    }
+
+    /**
+     * Returns url for current locale
+     * @return string url
+     */
+    public function getUrl($url, $absolute = false)
+    {
+        return $this->generator->getUrl($url, $absolute);
+    }
+
+    /**
+     * Returns url for locale
+     * @param string $locale locale
+     * @return string url
+     */
+    public function getUrlForLocale($url, $locale, $absolute = false)
+    {
+        return $this->generator->getUrlForLocale($url, $locale, $absolute);
+    }
+
+    /**
      * Returns index url for current locale
      * @return string url
      */
-    public function getIndexUrl()
+    public function getIndexUrl($absolute = false)
     {
-        return $this->generator->getIndexUrl();
+        return $this->generator->getIndexUrl($absolute);
     }
 
     /**
@@ -65,9 +97,9 @@ class LocaleExtension extends \Twig_Extension
      * @param string $locale locale
      * @return string url
      */
-    public function getIndexUrlForLocale($locale)
+    public function getIndexUrlForLocale($locale, $absolute = false)
     {
-        return $this->generator->getIndexUrlForLocale($locale);
+        return $this->generator->getIndexUrlForLocale($locale, $absolute);
     }
 
     /**
