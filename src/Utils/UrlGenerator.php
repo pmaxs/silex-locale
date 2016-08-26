@@ -56,6 +56,71 @@ class UrlGenerator
     }
 
     /**
+     * Returns url for route
+     * @param $locale
+     * @param $name
+     * @param array $parameters
+     * @param int $referenceType
+     * @return string url
+     */
+    public function generate($locale, $name, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    {
+        if ($locale != $this->default_locale) {
+            $parameters['locale'] = $locale . '/';
+        }
+
+        return $this->generator->generate($name, $parameters, $referenceType);
+    }
+
+    public function getUrl($url, $absolute = false)
+    {
+        return $this->getUrlForLocale($url, $this->getLocale(), $absolute);
+    }
+
+    public function getUrlForLocale($url, $locale, $absolute = false)
+    {
+        $url_parts = parse_url($url);
+
+        if (!empty($url_parts['scheme'])){
+            return $url;
+        }
+
+        if ($this->resolve_by_host) {
+            if (!$absolute && $locale == $this->getLocale()) {
+                return $url;
+            }
+
+            $url = ''
+                .$this->getScheme().'://'
+                .($locale != $this->default_locale ? $locale . '.' : '')
+                .$this->getHost() . '/'
+                .$url;
+
+            return $url;
+
+        } else {
+            if (!strlen($url_parts['path']) && !strlen($url_parts['query'])) {
+                return $url;
+            }
+
+            if (!preg_match('~^/?(' . $this->getLocalesReg() . ')(/|$)~', $url)) {
+                $url = '/'
+                    .($locale != $this->default_locale ? $locale . '/' : '')
+                    .ltrim($url, '/');
+            }
+
+            if ($absolute) {
+                $url = ''
+                    .$this->getScheme().'://'
+                    .$this->getHost() . '/'
+                    .$url;
+            }
+
+            return $url;
+        }
+    }
+
+    /**
      * Returns index url for current locale
      * @param boolean $absolute absolute url
      * @return string url
@@ -73,24 +138,25 @@ class UrlGenerator
      */
     public function getIndexUrlForLocale($locale, $absolute = false)
     {
-        if ($locale == $this->default_locale) $locale = '';
-
         if ($this->resolve_by_host) {
             $url = ''
                 .$this->getScheme().'://'
-                .($locale ? $locale . '.' : '')
+                .($locale != $this->default_locale ? $locale . '.' : '')
                 .$this->getHost() . '/';
+
+            return $url;
+
         } else {
             $url = $this->generator->generate(
                 $this->fake_index_route,
-                ['locale0' => $locale],
+                ['locale0' => $locale != $this->default_locale ? $locale : ''],
                 $absolute ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH
             );
 
             $url = rtrim($url, '/') . '/';
-        }
 
-        return $url;
+            return $url;
+        }
     }
 
     /**
@@ -113,7 +179,7 @@ class UrlGenerator
         if (isset($host)) return $host;
 
         $host = $this->generator->getContext()->getHost();
-        $host = preg_replace('~(' . implode('|', $this->locales) . ')\\.~i', '', $host);
+        $host = preg_replace('~(' . $this->getLocalesReg() . ')\\.~i', '', $host);
 
         return $host;
     }
@@ -127,4 +193,18 @@ class UrlGenerator
         return $this->generator->getContext()->getParameter('_locale');
     }
 
+    /**
+     * Return locales reg
+     * @return string
+     */
+    protected function getLocalesReg()
+    {
+        static $locales_reg;
+
+        if (isset($locales_reg)) return $locales_reg;
+
+        $locales_reg = implode('|', $this->locales);
+
+        return $locales_reg;
+    }
 }
