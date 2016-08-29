@@ -147,9 +147,14 @@ class LocaleListener implements EventSubscriberInterface
 
         if (isset($exclude_routes_reg)) return $exclude_routes_reg;
 
-        $exclude_routes_reg = implode('|', $this->exclude_routes);
-        $exclude_routes_reg = str_replace('~', '\\~', $exclude_routes_reg);
-        $exclude_routes_reg = '~' . $exclude_routes_reg . '~';
+        if (!empty($this->exclude_routes)) {
+            $exclude_routes_reg = implode('|', $this->exclude_routes);
+            $exclude_routes_reg = str_replace('~', '\\~', $exclude_routes_reg);
+            $exclude_routes_reg = '~' . $exclude_routes_reg . '~';
+        } else {
+            $exclude_routes_reg = false;
+        }
+
 
         return $exclude_routes_reg;
     }

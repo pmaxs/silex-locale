@@ -160,6 +160,22 @@ class UrlGenerator
     }
 
     /**
+     * Clear path from locale
+     * @param $path
+     * @return string
+     */
+    public function clearPathFromLocale($path)
+    {
+        if ($this->resolve_by_host) {
+            return $path;
+        }
+
+        $path = preg_replace('~^/?(' . $this->getLocalesReg() . ')(/|$)~', '', $path);
+
+        return $path;
+    }
+
+    /**
      * Return scheme
      * @return string
      */
