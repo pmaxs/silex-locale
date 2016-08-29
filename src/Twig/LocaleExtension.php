@@ -37,11 +37,12 @@ class LocaleExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('generate', [$this, 'generate']),
+            new \Twig_SimpleFunction('locale_generate', [$this, 'generate']),
             new \Twig_SimpleFunction('locale_get_url', [$this, 'getUrl']),
             new \Twig_SimpleFunction('locale_get_url_for_locale', [$this, 'getUrlForLocale']),
             new \Twig_SimpleFunction('locale_get_index_url', [$this, 'getIndexUrl']),
             new \Twig_SimpleFunction('locale_get_index_url_for_locale', [$this, 'getIndexUrlForLocale']),
+            new \Twig_SimpleFunction('locale_clear_path_from_locale', [$this, 'clearPathFromLocale']),
         ];
     }
 
@@ -100,6 +101,16 @@ class LocaleExtension extends \Twig_Extension
     public function getIndexUrlForLocale($locale, $absolute = false)
     {
         return $this->generator->getIndexUrlForLocale($locale, $absolute);
+    }
+
+    /**
+     * Clear path from locale
+     * @param $path
+     * @return string
+     */
+    public function clearPathFromLocale($path)
+    {
+        return $this->generator->clearPathFromLocale($path);
     }
 
     /**
