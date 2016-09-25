@@ -20,6 +20,7 @@ class LocaleServiceProvider implements ServiceProviderInterface, BootableProvide
      */
     public function register(Container $app)
     {
+        $app['locale.resolve_by_host'] = false;
         $app['locale.exclude_routes'] = [];
         $app['locale.fake_index_route'] = 'locale-index0';
 
@@ -62,7 +63,7 @@ class LocaleServiceProvider implements ServiceProviderInterface, BootableProvide
             array_merge($app['locale.exclude_routes'], [$app['locale.fake_index_route']])
         ));
 
-        if (!$this->resolve_by_host) {
+        if (!$app['locale.resolve_by_host']) {
             $app['routes']->add($app['locale.fake_index_route'], new Route(
                 '/{locale0}/',
                 ['locale0' => '', '_controller' => null],

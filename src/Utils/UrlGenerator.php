@@ -99,7 +99,10 @@ class UrlGenerator
             return $url;
 
         } else {
-            if (!strlen($url_parts['path']) && !strlen($url_parts['query'])) {
+            if (
+                (!isset($url_parts['path']) || !strlen($url_parts['path']))
+                && (!isset($url_parts['query']) || !strlen($url_parts['query']))
+            ) {
                 return $url;
             }
 
