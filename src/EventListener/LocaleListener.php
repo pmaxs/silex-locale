@@ -155,7 +155,6 @@ class LocaleListener implements EventSubscriberInterface
             $exclude_routes_reg = false;
         }
 
-
         return $exclude_routes_reg;
     }
 }
