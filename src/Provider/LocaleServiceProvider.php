@@ -72,7 +72,7 @@ class LocaleServiceProvider implements ServiceProviderInterface, BootableProvide
                 ))
                 ->setRequirements(array(
                     'locale0' => '|' . implode('|', $app['locale.locales']),
-            ));
-    }
+                ));
+        }
     }
 }
