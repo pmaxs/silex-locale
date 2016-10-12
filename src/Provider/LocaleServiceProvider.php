@@ -62,11 +62,15 @@ class LocaleServiceProvider implements ServiceProviderInterface
         ));
 
         if (!$app['locale.resolve_by_host']) {
-            $app['routes']->add($app['locale.fake_index_route'], new Route(
-                '/{locale0}/',
-                ['locale0' => '', '_controller' => null],
-                ['locale0' => '|' . implode('|', $app['locale.locales'])]
-            ));
+            $app->match('/{locale0}/', null)
+                ->bind($app['locale.fake_index_route'])
+                ->setDefaults(array(
+                    'locale0' => '',
+                    '_controller' => null,
+                ))
+                ->setRequirements(array(
+                    'locale0' => '|' . implode('|', $app['locale.locales']),
+                ));
         }
     }
 }
