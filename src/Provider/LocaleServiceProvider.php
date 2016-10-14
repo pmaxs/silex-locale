@@ -1,8 +1,10 @@
 <?php
 namespace Pmaxs\Silex\Locale\Provider;
 
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Silex\Api\BootableProviderInterface;
 use Symfony\Component\Routing\Route;
 use Pmaxs\Silex\Locale\EventListener\LocaleListener;
 use Pmaxs\Silex\Locale\Utils\UrlGenerator as LocaleUrlGenerator;
@@ -11,24 +13,24 @@ use Pmaxs\Silex\Locale\Twig\LocaleExtension;
 /**
  * Locale Provider.
  */
-class LocaleServiceProvider implements ServiceProviderInterface
+class LocaleServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
     /**
      * @inheritdoc
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['locale.resolve_by_host'] = false;
         $app['locale.exclude_routes'] = [];
 
-        $app['locale.url_generator'] = $app->share(function() use ($app) {
+        $app['locale.url_generator'] = function() use ($app) {
             return new LocaleUrlGenerator(
                 $app['url_generator'],
                 $app['locale.locales'],
                 $app['locale.default_locale'],
                 $app['locale.resolve_by_host']
             );
-        });
+        };
 
         if (isset($app['twig'])) {
             $app->extend('twig', function ($twig) use ($app) {
