@@ -64,12 +64,12 @@ $app = new \Silex\Application();
 
 $app->register(new \Silex\Provider\LocaleServiceProvider());
 $app->register(new \Silex\Provider\TranslationServiceProvider());
-$app->register(new \Pmaxs\Silex\Locale\Provider\LocaleServiceProvider([
+$app->register(new \Pmaxs\Silex\Locale\Provider\LocaleServiceProvider(), [
     'locale.locales' => ['en', 'ru', 'es'],
     'locale.default_locale' => 'en',
     'locale.resolve_by_host' => false,
     'locale.exclude_routes' => ['^_']
-]));
+]);
 
 // will be accessible by urls `/`, `/en/`, `/ru/`, `/es/`
 $app->get('/', function (Request $request) use ($app) {

@@ -20,15 +20,13 @@ class LocaleServiceProvider implements ServiceProviderInterface
     {
         $app['locale.resolve_by_host'] = false;
         $app['locale.exclude_routes'] = [];
-        $app['locale.fake_index_route'] = 'locale-index0';
 
         $app['locale.url_generator'] = $app->share(function() use ($app) {
             return new LocaleUrlGenerator(
                 $app['url_generator'],
                 $app['locale.locales'],
                 $app['locale.default_locale'],
-                $app['locale.resolve_by_host'],
-                $app['locale.fake_index_route']
+                $app['locale.resolve_by_host']
             );
         });
 
@@ -58,19 +56,7 @@ class LocaleServiceProvider implements ServiceProviderInterface
             $app['locale.default_locale'],
             $app['locale.resolve_by_host'],
             $app['routes'],
-            array_merge($app['locale.exclude_routes'], [$app['locale.fake_index_route']])
+            $app['locale.exclude_routes']
         ));
-
-        if (!$app['locale.resolve_by_host']) {
-            $app->match('/{locale0}/', null)
-                ->bind($app['locale.fake_index_route'])
-                ->setDefaults(array(
-                    'locale0' => '',
-                    '_controller' => null,
-                ))
-                ->setRequirements(array(
-                    'locale0' => '|' . implode('|', $app['locale.locales']),
-                ));
-        }
     }
 }
